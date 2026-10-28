@@ -1,0 +1,674 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NodoRural · Ven, aprende y quédate</title>
+<meta name="description" content="NodoRural: red de nodos rurales de trabajo, formación y arraigo. Coworking con fibra, formación en IA y acompañamiento para quedarte a vivir en el pueblo.">
+<meta property="og:title" content="NodoRural · Ven, aprende y quédate">
+<meta property="og:description" content="Nodos rurales de trabajo, formación y arraigo, unidos por un motor de IA que diseña tu itinerario.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#1F3A2E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%231F3A2E'/%3E%3Cpath d='M5 23l7-10 4 5 3-4 8 9z' fill='%232FA88A'/%3E%3Ccircle cx='22' cy='10' r='2.6' fill='%23D98E30'/%3E%3C/svg%3E">
+<style>
+  :root {
+    --bosque: #1F3A2E; --bosque-2: #2B4E3F; --ambar: #D98E30; --ambar-2: #A86A14; --teal: #2FA88A; --teal-2: #1B6E58;
+    --crema: #F7F4EC; --papel: #FFFFFF; --tinta: #1B2A23; --suave: #55655D; --linea: #E1DCCD;
+    --radio: 14px; --sombra: 0 1px 2px rgba(31,58,46,.06), 0 8px 24px rgba(31,58,46,.07);
+    --cab: 64px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: calc(var(--cab) + 12px); }
+  body { margin: 0; font: 17px/1.6 "Segoe UI", system-ui, -apple-system, Roboto, sans-serif; color: var(--tinta); background: var(--crema); -webkit-font-smoothing: antialiased; }
+  h1, h2, h3 { font-family: Cambria, Georgia, "Times New Roman", serif; line-height: 1.15; margin: 0 0 .5em; color: var(--bosque); }
+  h1 { font-size: clamp(2.4rem, 6vw, 4rem); }
+  h2 { font-size: clamp(1.7rem, 3.6vw, 2.4rem); }
+  h3 { font-size: 1.3rem; }
+  p { margin: 0 0 1em; }
+  a { color: inherit; }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  :focus-visible { outline: 3px solid var(--ambar); outline-offset: 3px; border-radius: 6px; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
+  section { padding: 84px 0; }
+  .kicker { display: inline-block; font-size: .8rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--ambar-2); margin-bottom: 14px; }
+  .lead { font-size: 1.2rem; color: var(--suave); max-width: 640px; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  /* botones: solo lo que se puede pulsar tiene aspecto de botón */
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 13px 24px; border-radius: 999px; font-weight: 700; text-decoration: none; border: 2px solid transparent; cursor: pointer; transition: transform .15s ease, background .15s ease, box-shadow .15s ease; }
+  .btn:hover { transform: translateY(-1px); }
+  .btn:active { transform: translateY(0); }
+  .btn-primario { background: var(--ambar); color: #1B1405; }
+  .btn-primario:hover { background: #E49C3F; box-shadow: 0 6px 18px rgba(217,142,48,.35); }
+  .btn-claro { background: transparent; color: #fff; border-color: rgba(255,255,255,.55); }
+  .btn-claro:hover { background: rgba(255,255,255,.12); }
+  .btn-oscuro { background: var(--bosque); color: #fff; }
+  .btn-oscuro:hover { background: var(--bosque-2); }
+  .btn[disabled] { opacity: .6; cursor: progress; transform: none; }
+
+  .progreso { position: fixed; top: 0; left: 0; height: 3px; width: 0; background: linear-gradient(90deg, var(--teal), var(--ambar)); z-index: 40; }
+
+  header.nav { position: sticky; top: 0; z-index: 30; background: rgba(247,244,236,.94); backdrop-filter: blur(8px); border-bottom: 1px solid var(--linea); }
+  .nav .wrap { display: flex; align-items: center; justify-content: space-between; height: var(--cab); gap: 16px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-family: Cambria, Georgia, serif; font-weight: 700; font-size: 1.25rem; color: var(--bosque); text-decoration: none; }
+  .brand svg { width: 28px; height: 28px; }
+  .menu { display: flex; align-items: center; gap: 6px; }
+  .menu a.enlace { text-decoration: none; font-size: .95rem; color: var(--suave); padding: 8px 12px; border-radius: 8px; position: relative; }
+  .menu a.enlace:hover { color: var(--bosque); background: rgba(31,58,46,.06); }
+  .menu a.enlace.activo { color: var(--bosque); font-weight: 700; }
+  .menu a.enlace.activo::after { content: ""; position: absolute; left: 12px; right: 12px; bottom: 2px; height: 2px; background: var(--ambar); border-radius: 2px; }
+  .nav .btn { padding: 9px 20px; font-size: .95rem; margin-left: 8px; }
+  .burger { display: none; width: 44px; height: 44px; border: 1px solid var(--linea); border-radius: 10px; background: var(--papel); cursor: pointer; place-items: center; }
+  .burger span, .burger span::before, .burger span::after { display: block; width: 20px; height: 2px; background: var(--bosque); border-radius: 2px; position: relative; transition: transform .2s ease, background .2s ease; }
+  .burger span::before, .burger span::after { content: ""; position: absolute; left: 0; }
+  .burger span::before { top: -6px; } .burger span::after { top: 6px; }
+  .burger[aria-expanded="true"] span { background: transparent; }
+  .burger[aria-expanded="true"] span::before { transform: translateY(6px) rotate(45deg); }
+  .burger[aria-expanded="true"] span::after { transform: translateY(-6px) rotate(-45deg); }
+
+  .hero { background: radial-gradient(1200px 500px at 85% -10%, rgba(47,168,138,.35), transparent 60%), linear-gradient(160deg, var(--bosque) 0%, #162B22 100%); color: #fff; padding: 110px 0 96px; position: relative; overflow: hidden; }
+  .hero h1 { color: #fff; max-width: 780px; }
+  .hero h1 em { color: var(--ambar); font-style: normal; }
+  .hero .lead { color: rgba(255,255,255,.84); margin-bottom: 34px; }
+  .hero .acciones { display: flex; gap: 14px; flex-wrap: wrap; }
+  .hero .datos { display: flex; gap: 36px; flex-wrap: wrap; margin: 64px 0 0; padding: 28px 0 0; border-top: 1px solid rgba(255,255,255,.18); }
+  .hero .datos div { max-width: 210px; }
+  .hero .datos strong { display: block; font-family: Cambria, Georgia, serif; font-size: 1.5rem; color: var(--ambar); }
+  .hero .datos span { font-size: .92rem; color: rgba(255,255,255,.78); }
+  .hero .monte { position: absolute; right: -40px; bottom: -4px; width: 520px; opacity: .22; pointer-events: none; }
+
+  .dos { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 36px; }
+  .caja { background: var(--papel); border: 1px solid var(--linea); border-radius: var(--radio); padding: 28px; box-shadow: var(--sombra); }
+  .caja .etq { font-size: .78rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--ambar-2); }
+
+  /* pestañas */
+  .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 32px; }
+  .tab { border: 1.5px solid var(--linea); background: var(--papel); border-radius: 999px; padding: 10px 20px; font-weight: 700; color: var(--suave); cursor: pointer; transition: all .15s ease; }
+  .tab:hover { border-color: var(--bosque-2); color: var(--bosque); }
+  .tab[aria-selected="true"] { background: var(--bosque); border-color: var(--bosque); color: #fff; }
+  .panel { margin-top: 18px; background: var(--papel); border: 1px solid var(--linea); border-radius: var(--radio); padding: 32px; box-shadow: var(--sombra); display: grid; grid-template-columns: 1.15fr 1fr; gap: 32px; align-items: start; animation: entra .25s ease; }
+  .panel[hidden] { display: none; }
+  .panel h3 { margin-bottom: .3em; }
+  .panel ul { margin: 0; padding: 0; list-style: none; }
+  .panel li { padding: 10px 0 10px 30px; position: relative; border-bottom: 1px solid var(--linea); color: var(--suave); }
+  .panel li:last-child { border-bottom: 0; }
+  .panel li::before { content: ""; position: absolute; left: 0; top: 16px; width: 14px; height: 14px; border-radius: 50%; background: var(--teal); box-shadow: inset 0 0 0 4px #D8F0E9; }
+  .panel .accion { margin-top: 22px; }
+  .tag { display: inline-block; font-size: .75rem; font-weight: 700; letter-spacing: .08em; padding: 3px 10px; border-radius: 999px; background: #E3F3EE; color: var(--teal-2); margin-bottom: 12px; }
+  @keyframes entra { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+  .capas { background: var(--papel); border-block: 1px solid var(--linea); }
+  .capas .panel { background: var(--crema); box-shadow: none; }
+  .gran { font-family: Cambria, Georgia, serif; font-size: 5rem; line-height: 1; color: var(--teal); opacity: .5; }
+
+  .motor { background: var(--bosque); color: #fff; }
+  .motor h2, .motor h3 { color: #fff; }
+  .motor .kicker { color: var(--ambar); }
+  .motor .lead { color: rgba(255,255,255,.82); }
+  .sim { display: grid; grid-template-columns: 1fr 1.3fr; gap: 28px; margin-top: 40px; align-items: stretch; }
+  .sim .controles, .sim .resultado { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.16); border-radius: var(--radio); padding: 28px; }
+  .sim label { display: block; font-weight: 700; margin: 0 0 6px; font-size: .95rem; }
+  .sim .grupo { margin-bottom: 20px; }
+  .sim select { width: 100%; padding: 12px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,.3); background: #16291F; color: #fff; }
+  .sim .aviso { font-size: .85rem; color: rgba(255,255,255,.65); margin: 0; }
+  .ruta-sim { list-style: none; margin: 18px 0 22px; padding: 0; counter-reset: p; }
+  .ruta-sim li { counter-increment: p; position: relative; padding: 0 0 18px 54px; }
+  .ruta-sim li::before { content: counter(p); position: absolute; left: 0; top: 0; width: 36px; height: 36px; border-radius: 50%; background: var(--ambar); color: #1B1405; font-weight: 800; display: grid; place-items: center; }
+  .ruta-sim li::after { content: ""; position: absolute; left: 17px; top: 38px; bottom: 4px; width: 2px; background: rgba(255,255,255,.2); }
+  .ruta-sim li:last-child::after { display: none; }
+  .ruta-sim b { display: block; color: #fff; }
+  .ruta-sim span { color: rgba(255,255,255,.78); font-size: .97rem; }
+  .resultado h3 { margin-bottom: 0; }
+  .resultado .fade { animation: entra .3s ease; }
+
+  .ind { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin-top: 36px; }
+  .ind .caja b { font-family: Cambria, Georgia, serif; font-size: 1.25rem; color: var(--bosque); display: block; margin-bottom: 6px; }
+  .medidas { background: var(--papel); border-block: 1px solid var(--linea); }
+
+  /* hoja de ruta */
+  .hitos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 40px; position: relative; }
+  .hito { text-align: left; background: var(--papel); border: 1.5px solid var(--linea); border-radius: var(--radio); padding: 16px 18px; cursor: pointer; transition: all .15s ease; }
+  .hito small { display: block; color: var(--ambar-2); font-weight: 800; letter-spacing: .08em; font-size: .75rem; }
+  .hito strong { font-family: Cambria, Georgia, serif; color: var(--bosque); font-size: 1.05rem; line-height: 1.25; display: block; margin-top: 2px; }
+  .hito:hover { border-color: var(--bosque-2); transform: translateY(-2px); }
+  .hito[aria-selected="true"] { background: var(--bosque); border-color: var(--bosque); }
+  .hito[aria-selected="true"] small { color: var(--ambar); }
+  .hito[aria-selected="true"] strong { color: #fff; }
+  .hito-det { margin-top: 16px; background: var(--papel); border: 1px solid var(--linea); border-radius: var(--radio); padding: 26px 28px; box-shadow: var(--sombra); animation: entra .25s ease; }
+  .hito-det h3 { margin-bottom: .3em; }
+  .hito-det p { color: var(--suave); }
+  .hito-det .hit { display: inline-block; margin: 0; font-weight: 700; color: var(--teal-2); }
+  .barra { height: 8px; border-radius: 8px; background: var(--linea); overflow: hidden; margin-top: 14px; }
+  .barra i { display: block; height: 100%; background: linear-gradient(90deg, var(--teal), var(--ambar)); border-radius: 8px; transition: width .35s ease; }
+
+  .criterios { margin: 14px 0 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .criterios li { background: var(--papel); border: 1px solid var(--linea); border-radius: var(--radio); padding: 16px 18px 16px 48px; position: relative; font-weight: 600; color: var(--bosque); }
+  .criterios li::before { content: "✓"; position: absolute; left: 16px; top: 14px; width: 24px; height: 24px; border-radius: 50%; background: var(--teal); color: #fff; display: grid; place-items: center; font-size: .85rem; font-weight: 800; }
+
+  /* FAQ */
+  .faq { margin-top: 36px; max-width: 800px; }
+  .faq details { background: var(--papel); border: 1px solid var(--linea); border-radius: var(--radio); margin-bottom: 12px; overflow: hidden; }
+  .faq summary { cursor: pointer; list-style: none; padding: 18px 56px 18px 22px; font-weight: 700; color: var(--bosque); position: relative; }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after { content: "+"; position: absolute; right: 20px; top: 50%; transform: translateY(-50%); width: 28px; height: 28px; border-radius: 50%; background: #E3F3EE; color: var(--teal-2); display: grid; place-items: center; font-size: 1.2rem; transition: transform .2s ease; }
+  .faq details[open] summary::after { content: "–"; background: var(--ambar); color: #1B1405; }
+  .faq summary:hover { background: #FBF9F3; }
+  .faq details p { padding: 0 22px 20px; margin: 0; color: var(--suave); }
+
+  .equipo { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-top: 36px; }
+  .persona { background: var(--crema); border: 1px solid var(--linea); border-radius: var(--radio); padding: 22px 18px; text-align: center; transition: transform .2s ease, box-shadow .2s ease; }
+  .persona:hover { transform: translateY(-3px); box-shadow: var(--sombra); }
+  .avatar { width: 62px; height: 62px; border-radius: 50%; margin: 0 auto 12px; display: grid; place-items: center; font-family: Cambria, Georgia, serif; font-weight: 700; font-size: 1.3rem; color: #fff; background: var(--bosque-2); }
+  .persona:nth-child(2n) .avatar { background: var(--teal-2); }
+  .persona:nth-child(3n) .avatar { background: var(--ambar-2); }
+  .persona b { display: block; }
+  .persona span { display: block; font-size: .88rem; color: var(--suave); line-height: 1.4; margin-top: 4px; }
+
+  .contacto { background: linear-gradient(160deg, var(--bosque) 0%, #162B22 100%); color: #fff; text-align: center; }
+  .contacto h2 { color: #fff; }
+  .contacto .lead { margin: 0 auto 34px; color: rgba(255,255,255,.84); }
+  .pasos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 0 auto 40px; padding: 0; list-style: none; max-width: 880px; counter-reset: s; text-align: left; }
+  .pasos li { counter-increment: s; padding: 4px 0 4px 46px; position: relative; font-size: .95rem; color: rgba(255,255,255,.86); }
+  .pasos li::before { content: counter(s); position: absolute; left: 0; top: 0; width: 32px; height: 32px; border-radius: 50%; background: var(--ambar); color: #1B1405; font-weight: 800; display: grid; place-items: center; }
+  .contacto .btn { font-size: 1.1rem; padding: 16px 34px; }
+  .contacto .otras { margin-top: 20px; font-size: .95rem; color: rgba(255,255,255,.7); }
+  .contacto .otras a { color: var(--ambar); }
+
+  footer { background: #101F18; color: rgba(255,255,255,.62); font-size: .88rem; padding: 32px 0; }
+  footer .wrap { display: flex; justify-content: space-between; gap: 16px 32px; flex-wrap: wrap; }
+  footer a { color: rgba(255,255,255,.8); }
+
+  .subir { position: fixed; right: 18px; bottom: 18px; width: 48px; height: 48px; border-radius: 50%; border: 0; background: var(--bosque); color: #fff; font-size: 1.3rem; cursor: pointer; box-shadow: var(--sombra); opacity: 0; transform: translateY(12px); pointer-events: none; transition: all .2s ease; z-index: 20; }
+  .subir.ver { opacity: 1; transform: none; pointer-events: auto; }
+  .subir:hover { background: var(--ambar); color: #1B1405; }
+
+  /* diálogo de contacto */
+  dialog { border: 0; padding: 0; border-radius: 20px; width: min(560px, calc(100vw - 24px)); max-height: calc(100vh - 24px); overflow: auto; box-shadow: 0 30px 80px rgba(0,0,0,.4); color: var(--tinta); background: var(--papel); }
+  dialog::backdrop { background: rgba(16,31,24,.65); backdrop-filter: blur(3px); }
+  .dlg-cab { padding: 26px 28px 8px; position: relative; }
+  .dlg-cab h2 { font-size: 1.6rem; margin-bottom: .2em; padding-right: 40px; }
+  .dlg-cab p { color: var(--suave); margin: 0; font-size: .98rem; }
+  .cerrar { position: absolute; right: 18px; top: 18px; width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--linea); background: var(--papel); cursor: pointer; font-size: 1.2rem; line-height: 1; color: var(--suave); }
+  .cerrar:hover { background: var(--crema); color: var(--bosque); }
+  form.contacto-form { padding: 14px 28px 28px; display: grid; gap: 14px; }
+  .fila { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .campo label { display: block; font-weight: 700; font-size: .9rem; margin-bottom: 5px; color: var(--bosque); }
+  .campo input, .campo select, .campo textarea { width: 100%; padding: 12px 14px; border-radius: 10px; border: 1.5px solid var(--linea); background: #FBFAF6; }
+  .campo textarea { min-height: 112px; resize: vertical; }
+  .campo input:focus, .campo select:focus, .campo textarea:focus { outline: none; border-color: var(--teal); box-shadow: 0 0 0 3px rgba(47,168,138,.2); }
+  .campo.mal input, .campo.mal select, .campo.mal textarea { border-color: #C0392B; background: #FDF3F1; }
+  .campo .err { display: none; color: #B03A2E; font-size: .84rem; margin-top: 4px; }
+  .campo.mal .err { display: block; }
+  .trampa { position: absolute; left: -9999px; }
+  .legal { font-size: .82rem; color: var(--suave); margin: 0; }
+  .estado { padding: 34px 28px 30px; text-align: center; }
+  .estado .ico { width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 14px; display: grid; place-items: center; font-size: 1.9rem; background: #E3F3EE; color: var(--teal-2); }
+  .estado.mal .ico { background: #FBE9E6; color: #B03A2E; }
+  .estado .botones { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 18px; }
+  .estado .btn-sec { background: transparent; border-color: var(--linea); color: var(--bosque); }
+  .estado .btn-sec:hover { background: var(--crema); }
+  .giro { width: 18px; height: 18px; border: 3px solid rgba(27,20,5,.25); border-top-color: #1B1405; border-radius: 50%; animation: gira .7s linear infinite; }
+  @keyframes gira { to { transform: rotate(360deg); } }
+
+  .rev { opacity: 0; transform: translateY(14px); transition: opacity .5s ease, transform .5s ease; }
+  .rev.in { opacity: 1; transform: none; }
+
+  @media (max-width: 900px) {
+    .dos, .ind, .sim, .panel { grid-template-columns: 1fr; }
+    .hitos, .criterios, .pasos { grid-template-columns: 1fr 1fr; }
+    .equipo { grid-template-columns: repeat(2, 1fr); }
+    .burger { display: grid; }
+    .menu { position: absolute; left: 0; right: 0; top: var(--cab); background: var(--crema); border-bottom: 1px solid var(--linea); padding: 10px 20px 18px; flex-direction: column; align-items: stretch; gap: 2px; display: none; box-shadow: var(--sombra); }
+    .menu.abierto { display: flex; }
+    .menu a.enlace { padding: 12px 8px; font-size: 1.05rem; }
+    .menu a.enlace.activo::after { display: none; }
+    .menu .btn { margin: 8px 0 0; justify-content: center; }
+    .hero .monte { display: none; }
+    section { padding: 60px 0; }
+  }
+  @media (max-width: 560px) {
+    .hitos, .criterios, .pasos, .equipo, .fila { grid-template-columns: 1fr; }
+    .panel { padding: 24px 20px; }
+    .dlg-cab, form.contacto-form { padding-left: 20px; padding-right: 20px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; } *, *::before, *::after { animation: none !important; transition: none !important; }
+    .rev { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+<div class="progreso" id="progreso" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#inicio" aria-label="NodoRural, inicio">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="#1F3A2E"/><path d="M5 23l7-10 4 5 3-4 8 9z" fill="#2FA88A"/><circle cx="22" cy="10" r="2.6" fill="#D98E30"/></svg>
+      NodoRural
+    </a>
+    <button class="burger" id="burger" aria-expanded="false" aria-controls="menu" aria-label="Abrir menú"><span></span></button>
+    <nav class="menu" id="menu" aria-label="Principal">
+      <a class="enlace" href="#que-hacemos">Qué hacemos</a>
+      <a class="enlace" href="#motor">Tu itinerario</a>
+      <a class="enlace" href="#para-quien">Para quién</a>
+      <a class="enlace" href="#hoja-de-ruta">Hoja de ruta</a>
+      <a class="enlace" href="#faq">Preguntas</a>
+      <a class="enlace" href="#equipo">Equipo</a>
+      <button class="btn btn-primario" type="button" data-contacto>Contáctanos</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+<section class="hero" id="inicio">
+  <svg class="monte" viewBox="0 0 520 240" aria-hidden="true"><path d="M0 240 L110 90 L190 170 L270 60 L380 190 L440 120 L520 240Z" fill="#2FA88A"/></svg>
+  <div class="wrap">
+    <span class="kicker" style="color:var(--ambar)">Coworking · Coliving · Formación digital rural</span>
+    <h1>Ven, aprende <em>y quédate.</em></h1>
+    <p class="lead">Una red de nodos en pueblos: espacio de trabajo con fibra, formación en inteligencia artificial y acompañamiento para quien decide quedarse a vivir.</p>
+    <div class="acciones">
+      <button class="btn btn-primario" type="button" data-contacto>Contáctanos</button>
+      <a class="btn btn-claro" href="#motor">Prueba tu itinerario</a>
+    </div>
+    <dl class="datos">
+      <div><strong>3 capas</strong><span>Conecta, Aprende y Arraiga</span></div>
+      <div><strong>1 motor de IA</strong><span>diseña el itinerario de cada persona</span></div>
+      <div><strong>3 nodos piloto</strong><span>para validar el modelo con usuarios reales</span></div>
+    </dl>
+  </div>
+</section>
+
+<section id="problema">
+  <div class="wrap rev">
+    <span class="kicker">El problema</span>
+    <h2>Dos necesidades que no se encuentran</h2>
+    <p class="lead">Mucha gente quiere vivir en un pueblo y muchos pueblos necesitan gente. Falta el puente entre ambos.</p>
+    <div class="dos">
+      <div class="caja"><span class="etq">Para quien teletrabaja</span><h3>«¿Y si no funciona?»</h3><p>Teme la mala conexión, el aislamiento y no saber si encajará en el pueblo. Probar antes de mudarse es hoy casi imposible.</p></div>
+      <div class="caja"><span class="etq">Para el pueblo</span><h3>Edificios vacíos y brecha digital</h3><p>Hay inmuebles municipales sin uso y una brecha digital que frena la economía local y el relevo generacional.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="capas" id="que-hacemos">
+  <div class="wrap rev">
+    <span class="kicker">Qué hacemos</span>
+    <h2>Tres capas, un mismo itinerario</h2>
+    <p class="lead">Convertimos edificios municipales vacíos en nodos donde trabajar, aprender y probar la vida en el pueblo. Elige una capa para verla.</p>
+    <div class="tabs" role="tablist" aria-label="Capas de NodoRural" data-tabs="capas">
+      <button class="tab" role="tab" id="t-conecta" aria-controls="p-conecta" aria-selected="true" type="button">1 · Conecta</button>
+      <button class="tab" role="tab" id="t-aprende" aria-controls="p-aprende" aria-selected="false" tabindex="-1" type="button">2 · Aprende</button>
+      <button class="tab" role="tab" id="t-arraiga" aria-controls="p-arraiga" aria-selected="false" tabindex="-1" type="button">3 · Arraiga</button>
+    </div>
+    <div class="panel" role="tabpanel" id="p-conecta" aria-labelledby="t-conecta">
+      <div><h3>Conecta: un nodo con conexión de verdad</h3><p>Coworking y coliving con fibra, o una alternativa de respaldo, en edificios municipales cedidos. Quien teletrabaja encuentra un puesto, alojamiento y una conexión que no falla.</p>
+        <ul><li>Auditoría de conectividad antes de abrir</li><li>Puestos de trabajo y alojamiento</li><li>Sensores de ocupación y cerraduras inteligentes</li></ul></div>
+      <div class="gran" aria-hidden="true">01</div>
+    </div>
+    <div class="panel" role="tabpanel" id="p-aprende" aria-labelledby="t-aprende" hidden>
+      <div><h3>Aprende: formación en IA y competencias digitales</h3><p>Cursos presenciales y online con un tutor de IA, para quien teletrabaja y también para la población local: la brecha digital se cierra desde el propio nodo.</p>
+        <ul><li>Cursos para distintos niveles</li><li>Tutor de IA que acompaña el aprendizaje</li><li>Abierto a vecinos y vecinas del pueblo</li></ul></div>
+      <div class="gran" aria-hidden="true">02</div>
+    </div>
+    <div class="panel" role="tabpanel" id="p-arraiga" aria-labelledby="t-arraiga" hidden>
+      <div><h3>Arraiga: de la estancia de prueba al pueblo</h3><p>Acompañamos el paso de probar a quedarse: vivienda, ayudas, trámites y comunidad, coordinados con el ayuntamiento y los socios locales.</p>
+        <ul><li>Asistente de IA para ayudas, vivienda y trámites</li><li>Seguimiento del itinerario de cada persona</li><li>Coordinación con ayuntamiento y socios locales</li></ul></div>
+      <div class="gran" aria-hidden="true">03</div>
+    </div>
+  </div>
+</section>
+
+<section class="motor" id="motor">
+  <div class="wrap rev">
+    <span class="kicker">El núcleo del proyecto</span>
+    <h2>Prueba tu itinerario</h2>
+    <p class="lead">Un motor de IA une las tres capas y propone a cada persona qué nodo, qué formación y qué pueblo encajan con ella. Dinos cómo eres y mira un ejemplo.</p>
+    <div class="sim">
+      <div class="controles">
+        <div class="grupo"><label for="s-perfil">¿Quién eres?</label>
+          <select id="s-perfil"><option value="Persona que teletrabaja">Persona que teletrabaja</option><option value="Empresa">Empresa</option><option value="Ayuntamiento">Ayuntamiento</option></select></div>
+        <div class="grupo"><label for="s-prio">¿Qué te importa más?</label>
+          <select id="s-prio"><option value="conexion">Una conexión que no falle</option><option value="formacion">Aprender y reciclarme</option><option value="comunidad">Encajar y sentirme parte</option></select></div>
+        <p class="aviso">Ejemplo ilustrativo. El motor real se validará con datos reales en los nodos piloto.</p>
+      </div>
+      <div class="resultado" aria-live="polite">
+        <div id="sim-out"></div>
+        <button class="btn btn-primario" type="button" id="sim-cta">Quiero este itinerario</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="para-quien">
+  <div class="wrap rev">
+    <span class="kicker">Para quién</span>
+    <h2>Un modelo en el que ganan todos</h2>
+    <div class="tabs" role="tablist" aria-label="Perfiles" data-tabs="perfiles">
+      <button class="tab" role="tab" id="t-b2c" aria-controls="p-b2c" aria-selected="true" type="button">Personas que teletrabajan</button>
+      <button class="tab" role="tab" id="t-b2b" aria-controls="p-b2b" aria-selected="false" tabindex="-1" type="button">Empresas</button>
+      <button class="tab" role="tab" id="t-b2g" aria-controls="p-b2g" aria-selected="false" tabindex="-1" type="button">Ayuntamientos</button>
+    </div>
+    <div class="panel" role="tabpanel" id="p-b2c" aria-labelledby="t-b2c">
+      <div><span class="tag">B2C</span><h3>Probar el pueblo antes de decidir</h3><p>Reserva una estancia, trabaja con buena conexión, aprende y conoce a la gente sin comprometerte.</p></div>
+      <div><ul><li>Estancias de prueba en un nodo</li><li>Cursos de IA y competencias digitales</li><li>Servicios premium y comunidad</li></ul>
+        <div class="accion"><button class="btn btn-oscuro" type="button" data-contacto data-perfil="Persona que teletrabaja">Quiero probar una estancia</button></div></div>
+    </div>
+    <div class="panel" role="tabpanel" id="p-b2b" aria-labelledby="t-b2b" hidden>
+      <div><span class="tag">B2B</span><h3>Talento distribuido, equipos que se quedan</h3><p>Estancias y formación para vuestros equipos en un entorno que ayuda a retener a las personas.</p></div>
+      <div><ul><li>Estancias para equipos</li><li>Formación digital a medida</li><li>Talento distribuido y retención</li></ul>
+        <div class="accion"><button class="btn btn-oscuro" type="button" data-contacto data-perfil="Empresa">Hablar para mi empresa</button></div></div>
+    </div>
+    <div class="panel" role="tabpanel" id="p-b2g" aria-labelledby="t-b2g" hidden>
+      <div><span class="tag">B2G</span><h3>Un edificio vacío puede volver a dar vida</h3><p>El ayuntamiento activa y cofinancia un nodo en un edificio municipal sin uso y atrae población.</p></div>
+      <div><ul><li>Activar y cofinanciar un nodo</li><li>Reutilizar edificios vacíos</li><li>Atraer y fijar población</li></ul>
+        <div class="accion"><button class="btn btn-oscuro" type="button" data-contacto data-perfil="Ayuntamiento">Quiero un nodo en mi municipio</button></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="medidas">
+  <div class="wrap rev">
+    <span class="kicker">Cómo medimos el éxito</span>
+    <h2>Lo que importa: personas que se quedan</h2>
+    <div class="ind">
+      <div class="caja"><b>Ocupación</b>Plazas de los nodos usadas, también fuera de temporada.</div>
+      <div class="caja"><b>De la prueba al empadronamiento</b>Cuántas estancias de prueba terminan en vivir en el pueblo.</div>
+      <div class="caja"><b>Permanencia a 12 meses</b>Cuántas personas siguen allí un año después.</div>
+    </div>
+  </div>
+</section>
+
+<section id="hoja-de-ruta">
+  <div class="wrap rev">
+    <span class="kicker">Hoja de ruta · 18 meses</span>
+    <h2>De la idea a diez nodos</h2>
+    <p class="lead">Elige una etapa para ver qué pasa en ella.</p>
+    <div class="hitos" role="tablist" aria-label="Etapas" data-tabs="hitos">
+      <button class="hito" role="tab" id="h1" aria-controls="hp" aria-selected="true" type="button" data-i="0"><small>MESES 1–3</small><strong>Demanda y municipios</strong></button>
+      <button class="hito" role="tab" id="h2" aria-controls="hp" aria-selected="false" tabindex="-1" type="button" data-i="1"><small>MESES 4–6</small><strong>Primer nodo abierto</strong></button>
+      <button class="hito" role="tab" id="h3" aria-controls="hp" aria-selected="false" tabindex="-1" type="button" data-i="2"><small>MESES 7–12</small><strong>Motor con datos reales</strong></button>
+      <button class="hito" role="tab" id="h4" aria-controls="hp" aria-selected="false" tabindex="-1" type="button" data-i="3"><small>MESES 13–18</small><strong>Capa de arraigo</strong></button>
+    </div>
+    <div class="hito-det" id="hp" role="tabpanel" aria-live="polite"></div>
+    <h3 style="margin-top:48px">¿Dónde abrimos? Cuatro criterios mínimos</h3>
+    <ul class="criterios"><li>Vivienda disponible</li><li>Fibra o alternativa viable</li><li>Compromiso municipal</li><li>Servicios básicos</li></ul>
+  </div>
+</section>
+
+<section class="capas" id="faq">
+  <div class="wrap rev">
+    <span class="kicker">Preguntas frecuentes</span>
+    <h2>Lo que más nos preguntan</h2>
+    <div class="faq">
+      <details><summary>¿Y si no encajo en el pueblo?</summary><p>Para eso existe la estancia de prueba: pruebas el nodo y el pueblo antes de decidir nada, con acompañamiento durante todo el proceso.</p></details>
+      <details><summary>¿Cómo sé que la conexión va a funcionar?</summary><p>Cada nodo cuenta con fibra o una alternativa de respaldo, y se audita la conectividad (velocidad, latencia y estabilidad) antes de abrir.</p></details>
+      <details><summary>¿Quién financia los nodos?</summary><p>Tres fuentes: los ayuntamientos, que activan y cofinancian el nodo; las empresas, que contratan estancias y formación para sus equipos; y las personas usuarias, con estancias, cursos y servicios premium.</p></details>
+      <details><summary>¿Qué hacéis con mis datos?</summary><p>El itinerario se personaliza con la información que tú nos das y con tu consentimiento (RGPD). Solo la usamos para responderte y diseñar tu propuesta.</p></details>
+      <details><summary>¿Dónde están los nodos?</summary><p>Estamos en fase de diseño: los municipios piloto se eligen en los primeros meses con cuatro criterios (vivienda, fibra o alternativa, compromiso municipal y servicios básicos). Si tu municipio quiere ser uno, escríbenos.</p></details>
+    </div>
+  </div>
+</section>
+
+<section id="equipo">
+  <div class="wrap rev">
+    <span class="kicker">Equipo</span>
+    <h2>Quién está detrás</h2>
+    <p class="lead">Grupo 6 del Campus de A Coruña: análisis de datos, IA aplicada, formación digital, producto, IoT y negocio.</p>
+    <div class="equipo">
+      <div class="persona"><div class="avatar">PS</div><b>Paloma Sánchez</b><span>Coordinación y negocio · datos y demanda</span></div>
+      <div class="persona"><div class="avatar">AF</div><b>Adrián Figueiredo</b><span>Coordinación y negocio · inteligencia artificial</span></div>
+      <div class="persona"><div class="avatar">PB</div><b>Pablo Barrán</b><span>Datos y demanda · formación y comunidad</span></div>
+      <div class="persona"><div class="avatar">AD</div><b>Antón Dopico</b><span>Inteligencia artificial · producto digital e IoT</span></div>
+      <div class="persona"><div class="avatar">IR</div><b>Isay Rodríguez</b><span>Producto digital e IoT · formación y comunidad</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="contacto" id="contacto">
+  <div class="wrap rev">
+    <span class="kicker" style="color:var(--ambar)">Contáctanos</span>
+    <h2>¿Te quedas con nosotros?</h2>
+    <p class="lead">Cuéntanos quién eres y qué buscas. Te respondemos al instante con una propuesta y un enlace para reservar una reunión de 15 minutos.</p>
+    <ol class="pasos">
+      <li>Rellenas el formulario</li>
+      <li>Recibes una propuesta personalizada</li>
+      <li>Reservas tu reunión</li>
+      <li>Te confirmamos la cita</li>
+    </ol>
+    <button class="btn btn-primario" type="button" data-contacto>Escribir al equipo</button>
+    <p class="otras">¿Prefieres ir directo? <a href="https://cal.com/anton-dopico-casquero-hktmjh/practica" target="_blank" rel="noopener">Reserva una reunión de 15 minutos</a></p>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 NodoRural · «Ven, aprende y quédate»</span>
+    <span>Empresa ficticia · proyecto académico de Gestión de la Innovación y Transformación Digital Empresarial, UIE</span>
+  </div>
+</footer>
+
+<button class="subir" id="subir" type="button" aria-label="Volver arriba">↑</button>
+
+<dialog id="dlg" aria-labelledby="dlg-t">
+  <div class="dlg-cab">
+    <button class="cerrar" type="button" id="dlg-x" aria-label="Cerrar">✕</button>
+    <h2 id="dlg-t">Contacta con NodoRural</h2>
+    <p>Ven, aprende y quédate. Te respondemos al momento con una propuesta y un enlace para reservar una reunión de 15 minutos.</p>
+  </div>
+  <form class="contacto-form" id="form" novalidate>
+    <div class="fila">
+      <div class="campo"><label for="f0">Nombre</label><input id="f0" name="field-0" type="text" autocomplete="given-name" placeholder="Escribe tu nombre" required><div class="err">Escribe tu nombre.</div></div>
+      <div class="campo"><label for="f1">Apellidos</label><input id="f1" name="field-1" type="text" autocomplete="family-name" placeholder="Escribe tus apellidos" required><div class="err">Escribe tus apellidos.</div></div>
+    </div>
+    <div class="campo"><label for="f2">Correo electrónico</label><input id="f2" name="field-2" type="email" autocomplete="email" placeholder="tu@correo.com" required><div class="err">Escribe un correo válido.</div></div>
+    <div class="campo"><label for="f3">¿Quién eres?</label>
+      <select id="f3" name="field-3" required><option value="" selected disabled>Elige una opción</option><option>Persona que teletrabaja</option><option>Empresa</option><option>Ayuntamiento</option></select><div class="err">Elige una opción.</div></div>
+    <div class="campo"><label for="f4">¿Qué estás buscando?</label><textarea id="f4" name="field-4" placeholder="Cuéntanos en pocas líneas qué necesitas" required></textarea><div class="err">Cuéntanos qué buscas.</div></div>
+    <input class="trampa" type="text" name="website" id="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <p class="legal">Usamos estos datos solo para responderte. Recibirás un correo con la propuesta y el enlace para reservar.</p>
+    <button class="btn btn-primario" type="submit" id="enviar" style="justify-content:center">Enviar</button>
+  </form>
+  <div class="estado" id="ok" hidden>
+    <div class="ico" aria-hidden="true">✓</div>
+    <h2>¡Recibido!</h2>
+    <p>Revisa tu bandeja de entrada (y el spam): te hemos enviado una propuesta personalizada con el enlace para reservar tu reunión.</p>
+    <div class="botones">
+      <a class="btn btn-primario" href="https://cal.com/anton-dopico-casquero-hktmjh/practica" target="_blank" rel="noopener">Reservar reunión ahora</a>
+      <button class="btn btn-sec" type="button" data-cerrar>Cerrar</button>
+    </div>
+  </div>
+  <div class="estado mal" id="ko" hidden>
+    <div class="ico" aria-hidden="true">!</div>
+    <h2>No hemos podido enviarlo</h2>
+    <p>Ha habido un problema de conexión. Puedes reintentarlo o usar el formulario directo.</p>
+    <div class="botones">
+      <button class="btn btn-primario" type="button" id="reintentar">Reintentar</button>
+      <a class="btn btn-sec" id="directo" href="https://vivaelfurbo6.app.n8n.cloud/form/6694b279-607f-4f1d-a769-4761acbde5c9" target="_blank" rel="noopener">Abrir formulario directo</a>
+    </div>
+  </div>
+</dialog>
+
+<script>
+(function () {
+  'use strict';
+  var FORM_URL = 'https://vivaelfurbo6.app.n8n.cloud/form/6694b279-607f-4f1d-a769-4761acbde5c9';
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- menú móvil ---------- */
+  var burger = $('#burger'), menu = $('#menu');
+  function cerrarMenu() { menu.classList.remove('abierto'); burger.setAttribute('aria-expanded', 'false'); burger.setAttribute('aria-label', 'Abrir menú'); }
+  burger.addEventListener('click', function () {
+    var abre = !menu.classList.contains('abierto');
+    menu.classList.toggle('abierto', abre);
+    burger.setAttribute('aria-expanded', String(abre));
+    burger.setAttribute('aria-label', abre ? 'Cerrar menú' : 'Abrir menú');
+  });
+  $$('a.enlace', menu).forEach(function (a) { a.addEventListener('click', cerrarMenu); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') cerrarMenu(); });
+
+  /* ---------- progreso, volver arriba, sección activa ---------- */
+  var barra = $('#progreso'), subir = $('#subir');
+  var secciones = $$('main section[id]');
+  var enlaces = $$('a.enlace', menu);
+  function alScroll() {
+    var h = document.documentElement;
+    var max = h.scrollHeight - h.clientHeight;
+    barra.style.width = (max > 0 ? (h.scrollTop / max) * 100 : 0) + '%';
+    subir.classList.toggle('ver', h.scrollTop > 700);
+    var pos = h.scrollTop + 120, actual = '';
+    secciones.forEach(function (s) { if (s.offsetTop <= pos) actual = s.id; });
+    enlaces.forEach(function (a) { a.classList.toggle('activo', a.getAttribute('href') === '#' + actual); });
+  }
+  window.addEventListener('scroll', alScroll, { passive: true }); alScroll();
+  subir.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); });
+
+  /* ---------- aparición al hacer scroll ---------- */
+  var revs = $$('.rev');
+  if ('IntersectionObserver' in window && !reduce) {
+    var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }); }, { threshold: .08 });
+    revs.forEach(function (r) { io.observe(r); });
+  } else { revs.forEach(function (r) { r.classList.add('in'); }); }
+
+  /* ---------- pestañas accesibles (capas, perfiles) ---------- */
+  function iniciarTabs(cont, onSel) {
+    var tabs = $$('[role="tab"]', cont);
+    function sel(t, foco) {
+      tabs.forEach(function (x) {
+        var on = x === t;
+        x.setAttribute('aria-selected', String(on)); x.tabIndex = on ? 0 : -1;
+        var p = document.getElementById(x.getAttribute('aria-controls'));
+        if (p && x.getAttribute('aria-controls') !== 'hp') p.hidden = !on;
+      });
+      if (foco) t.focus();
+      if (onSel) onSel(t);
+    }
+    tabs.forEach(function (t, i) {
+      t.addEventListener('click', function () { sel(t); });
+      t.addEventListener('keydown', function (e) {
+        var n = null;
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') n = tabs[(i + 1) % tabs.length];
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') n = tabs[(i - 1 + tabs.length) % tabs.length];
+        if (e.key === 'Home') n = tabs[0]; if (e.key === 'End') n = tabs[tabs.length - 1];
+        if (n) { e.preventDefault(); sel(n, true); }
+      });
+    });
+  }
+  iniciarTabs($('[data-tabs="capas"]'));
+  iniciarTabs($('[data-tabs="perfiles"]'));
+
+  /* ---------- hoja de ruta ---------- */
+  var HITOS = [
+    { t: 'Demanda y municipios', h: 'Hito 1 · municipios piloto elegidos', p: 'Estudio de demanda y selección de municipios con los cuatro criterios mínimos. En paralelo, fibra y obra del primer nodo.' },
+    { t: 'Primer nodo abierto', h: 'Hito 2 · nodo 1 abierto', p: 'El primer nodo abre sus puertas, con la app MVP (reservas, cursos y comunidad) y los primeros cursos.' },
+    { t: 'Motor con datos reales', h: 'Hito 3 · 3 nodos en marcha', p: 'El motor de itinerarios empieza a funcionar con datos reales y se abren los nodos 2 y 3.' },
+    { t: 'Capa de arraigo', h: 'Hito 4 · plan de 10 nodos', p: 'Se completa la capa de arraigo, se cierran acuerdos con empresas y se prepara el plan de 10 nodos.' }
+  ];
+  var hp = $('#hp');
+  function pintaHito(i) {
+    var h = HITOS[i];
+    hp.innerHTML = '<h3></h3><p></p><p class="hit"></p><div class="barra" aria-hidden="true"><i></i></div>';
+    hp.querySelector('h3').textContent = h.t; hp.querySelector('p').textContent = h.p;
+    hp.querySelector('.hit').textContent = h.h;
+    hp.querySelector('.barra i').style.width = '0%';
+    requestAnimationFrame(function () { hp.querySelector('.barra i').style.width = ((i + 1) / HITOS.length * 100) + '%'; });
+  }
+  iniciarTabs($('[data-tabs="hitos"]'), function (t) { pintaHito(+t.getAttribute('data-i')); });
+  pintaHito(0);
+
+  /* ---------- simulador de itinerario ---------- */
+  var SIM = {
+    'Persona que teletrabaja': {
+      conexion: ['Nodo con fibra auditada y puesto fijo de trabajo', 'Pack de formación «teletrabajo seguro» con el tutor de IA', 'Estancia de prueba y presentación al pueblo y a su comunidad'],
+      formacion: ['Nodo con aula y puesto de trabajo', 'Ruta de cursos de IA y competencias digitales a tu ritmo', 'Prácticas con proyectos reales de empresas y vecinos del pueblo'],
+      comunidad: ['Nodo con espacio común y alojamiento compartido', 'Talleres y actividades con la gente del pueblo', 'Acompañamiento de acogida para encajar desde la primera semana']
+    },
+    'Empresa': {
+      conexion: ['Nodo con sala de equipo y fibra auditada', 'Estancia de una semana para tu equipo distribuido', 'Seguimiento de la experiencia y de la productividad del equipo'],
+      formacion: ['Nodo con aula para el equipo', 'Formación en IA a medida de vuestros procesos', 'Plan de aplicación en la empresa con el tutor de IA'],
+      comunidad: ['Nodo con espacios de convivencia', 'Retiro de equipo con actividades en el pueblo', 'Propuesta para retener talento en entornos rurales']
+    },
+    'Ayuntamiento': {
+      conexion: ['Estudio del edificio municipal y de la conectividad disponible', 'Plan de fibra o alternativa de respaldo para el nodo', 'Convenio de cesión y apertura del nodo piloto'],
+      formacion: ['Diagnóstico de la brecha digital del municipio', 'Cursos de competencias digitales para vecinos y vecinas', 'Tutor de IA como apoyo para la población local'],
+      comunidad: ['Mapa de vivienda y servicios básicos del municipio', 'Programa de acogida para nuevas personas vecinas', 'Seguimiento del paso de la estancia de prueba al empadronamiento']
+    }
+  };
+  var TITULOS = { conexion: 'tu conexión', formacion: 'tu aprendizaje', comunidad: 'tu encaje en el pueblo' };
+  var DET = [['Nodo', 'dónde trabajar y vivir'], ['Formación', 'qué aprender'], ['Arraigo', 'cómo quedarte']];
+  var sOut = $('#sim-out'), sPerfil = $('#s-perfil'), sPrio = $('#s-prio');
+  function pintaSim() {
+    var pasos = SIM[sPerfil.value][sPrio.value];
+    sOut.innerHTML = '';
+    var d = document.createElement('div'); d.className = 'fade';
+    var h = document.createElement('h3'); h.textContent = 'Tu itinerario, pensado para ' + TITULOS[sPrio.value];
+    var ol = document.createElement('ol'); ol.className = 'ruta-sim';
+    pasos.forEach(function (txt, i) {
+      var li = document.createElement('li'), b = document.createElement('b'), s = document.createElement('span');
+      b.textContent = DET[i][0] + ' · ' + DET[i][1]; s.textContent = txt; li.appendChild(b); li.appendChild(s); ol.appendChild(li);
+    });
+    d.appendChild(h); d.appendChild(ol); sOut.appendChild(d);
+  }
+  sPerfil.addEventListener('change', pintaSim); sPrio.addEventListener('change', pintaSim); pintaSim();
+  $('#sim-cta').addEventListener('click', function () {
+    abrir({ perfil: sPerfil.value, mensaje: 'Me interesa un itinerario centrado en ' + TITULOS[sPrio.value].replace('tu ', 'mi ') + ': ' + SIM[sPerfil.value][sPrio.value].join('; ') + '.' });
+  });
+
+  /* ---------- contacto ---------- */
+  var dlg = $('#dlg'), form = $('#form'), ok = $('#ok'), ko = $('#ko'), btn = $('#enviar');
+  var ultimoFoco = null, enviando = false;
+  function vista(v) { form.hidden = v !== 'form'; ok.hidden = v !== 'ok'; ko.hidden = v !== 'ko'; }
+  function limpiaErrores() { $$('.campo', form).forEach(function (c) { c.classList.remove('mal'); }); }
+  function abrir(pre) {
+    ultimoFoco = document.activeElement; cerrarMenu();
+    vista('form'); limpiaErrores();
+    if (pre && pre.perfil) $('#f3').value = pre.perfil;
+    if (pre && pre.mensaje) $('#f4').value = pre.mensaje;
+    if (typeof dlg.showModal === 'function') dlg.showModal(); else window.open(FORM_URL, '_blank', 'noopener');
+    setTimeout(function () { var v = !$('#f0').value ? $('#f0') : (!$('#f2').value ? $('#f2') : $('#f4')); v.focus(); }, 30);
+  }
+  function cerrar() { if (dlg.open) dlg.close(); if (ultimoFoco && ultimoFoco.focus) ultimoFoco.focus(); }
+  $$('[data-contacto]').forEach(function (b) {
+    b.addEventListener('click', function () { abrir({ perfil: b.getAttribute('data-perfil') || '' }); });
+  });
+  $('#dlg-x').addEventListener('click', cerrar);
+  $$('[data-cerrar]').forEach(function (b) { b.addEventListener('click', cerrar); });
+  dlg.addEventListener('click', function (e) { if (e.target === dlg) cerrar(); });
+  $('#reintentar').addEventListener('click', function () { vista('form'); });
+
+  function valida() {
+    var bien = true;
+    [['f0', function (v) { return v.trim().length > 0; }], ['f1', function (v) { return v.trim().length > 0; }],
+     ['f2', function (v) { return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()); }],
+     ['f3', function (v) { return v !== ''; }], ['f4', function (v) { return v.trim().length > 0; }]].forEach(function (r) {
+      var el = document.getElementById(r[0]), c = el.closest('.campo'), v = r[1](el.value);
+      c.classList.toggle('mal', !v); if (!v) bien = false;
+    });
+    return bien;
+  }
+  $$('input, select, textarea', form).forEach(function (el) { el.addEventListener('input', function () { el.closest('.campo') && el.closest('.campo').classList.remove('mal'); }); });
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (enviando) return;
+    if (!valida()) { var m = $('.campo.mal input, .campo.mal select, .campo.mal textarea', form); if (m) m.focus(); return; }
+    if ($('#website').value) { vista('ok'); return; } // trampa para bots
+    var ahora = Date.now(), ult = 0;
+    try { ult = +localStorage.getItem('nr_ult') || 0; } catch (x) {}
+    if (ahora - ult < 20000) { vista('ok'); return; } // evita doble envío
+    enviando = true; btn.disabled = true; btn.innerHTML = '<span class="giro" aria-hidden="true"></span> Enviando…';
+    var fd = new FormData();
+    ['field-0', 'field-1', 'field-2', 'field-3', 'field-4'].forEach(function (n) { fd.append(n, form.elements[n].value.trim()); });
+    var ctrl = ('AbortController' in window) ? new AbortController() : null;
+    var tm = setTimeout(function () { if (ctrl) ctrl.abort(); }, 25000);
+    fetch(FORM_URL, { method: 'POST', mode: 'no-cors', body: fd, signal: ctrl ? ctrl.signal : undefined })
+      .then(function () { try { localStorage.setItem('nr_ult', String(Date.now())); } catch (x) {} form.reset(); vista('ok'); })
+      .catch(function () { vista('ko'); })
+      .then(function () { clearTimeout(tm); enviando = false; btn.disabled = false; btn.textContent = 'Enviar'; });
+  });
+})();
+</script>
+</body>
+</html>
